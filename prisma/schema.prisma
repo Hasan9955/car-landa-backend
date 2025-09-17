@@ -1,0 +1,262 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  email        String     @unique
+  password     String
+  role         UserRole   @default(USER)
+  status       UserStatus @default(ACTIVE)
+  profilePhoto String?
+  passportURL  String?
+  address      String?
+  phone        String?
+  isVerified   Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  notification Notification[]
+  otp          Otp[]
+  order        Order[]
+  Favourite    Favourite[]
+
+  @@map("users")
+}
+
+model Otp {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  otpCode   Int
+  expiry    DateTime
+  createdAt DateTime @default(now())
+
+  @@unique([userId, otpCode])
+  @@map("otp")
+}
+
+model Car {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  categoryId String   @db.ObjectId
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  brandId String @db.ObjectId
+  brand   Brand  @relation(fields: [brandId], references: [id])
+
+  carName          CAR_MODEL
+  carModel         String
+  price            Int
+  registrationYear Int
+
+  carLocation   Location
+  interiorColor String
+  exteriorColor String
+  mileage       Int
+
+  fuelType          FuelType
+  numberOfCylinders Int
+  transmission      Transmission
+
+  numberOfSeats       Int
+  enginePower         Float
+  shippingCost        Int
+  customClearanceCost Int
+  description         String
+  carImages           String[]
+
+  discount   Float?      @default(0.0)
+  isFeatured Boolean     @default(false)
+  isDeleted  Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  Favourite  Favourite[]
+
+  @@map("cars")
+}
+
+model Brand {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  BrandName String   @unique
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  car       Car[]
+
+  @@map("brands")
+}
+
+model Category {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  categoryName String   @unique
+  imageUrl     String
+  isDeleted    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  car          Car[]
+
+  @@map("categories")
+}
+
+model Favourite {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  car       Car      @relation(fields: [carId], references: [id])
+  carId     String   @db.ObjectId
+  createdAt DateTime @default(now())
+
+  @@unique([userId, carId])
+  @@map("favourites")
+}
+
+model Order {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  fullName  String
+  email     String
+  phone     String
+  address   String
+  carPrice  Int
+  totalCost Int
+  user      User   @relation(fields: [userId], references: [id])
+  userId    String @db.ObjectId
+
+  trackingNumber String        @unique
+  totalAmount    Int
+  status         OrderStatus   @default(PENDING)
+  paymentMethod  PaymentType
+  paymentStatus  PaymentStatus @default(PENDING)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Payment   Payment[]
+
+  @@map("orders")
+}
+
+model Payment {
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  amount    Float
+  method    PaymentType
+  status    PaymentStatus @default(PENDING)
+  orderId   String        @db.ObjectId
+  order     Order         @relation(fields: [orderId], references: [id])
+  paidAt    DateTime
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("payments")
+}
+
+model Notification {
+  id        String           @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String           @db.ObjectId
+  user      User             @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  type      NotificationType @default(INFO)
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@map("notifications")
+}
+
+model Banner {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  imageUrl  String
+  link      String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("banners")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  STANDARD_ADMIN
+  RESTRICTED_ADMIN
+  USER
+}
+
+enum ADMIN_STATUS {
+  ACTIVE
+  BLOCKED
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
+
+enum CAR_MODEL {
+  HONDA_CR_V
+  BMW_X5
+  AUDI_A4
+  PORSCHE_911
+  TOYOTA_SIENNA
+  TESLA_MODEL_S
+  OTHER
+}
+
+enum FuelType {
+  PETROL
+  DIESEL
+  ELECTRIC
+  HYBRID
+  LPG
+  OTHER
+}
+
+enum Location {
+  DUBAI
+  SOUTH_KOREA
+  EUROPE
+}
+
+enum Transmission {
+  AUTOMATIC
+  MANUAL
+}
+
+enum OrderStatus {
+  PENDING
+  PAYMENT_CONFIRMED
+  VEHICLE_SHIPPED
+  VESSEL_DEPARTED
+  ARRIVED_AT_PORT
+  COUSTOMS_CLEARANCE
+  READY_FOR_DELIVERY
+  DELIVERED
+  DELIVERED_TO_HOME
+  CANCELLED
+}
+
+enum PaymentType {
+  CASH
+  CARD
+  STRIPE
+  PAYPAL
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum NotificationType {
+  INFO
+  ALERT
+  PROMOTION
+}
