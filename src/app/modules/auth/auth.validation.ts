@@ -5,11 +5,7 @@ const registerUser = z.object({
   body: z.object({
     fullName: z.string({
       required_error: "User fullName is required!",
-    }),
-    gender: z.enum(["Male", "Female", "Other"], {
-      required_error: "Gender is required!",
-      invalid_type_error: "Invalid gender value!",
-    }),
+    }), 
     email: z
       .string({
         required_error: "Email is required!",

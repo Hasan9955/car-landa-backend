@@ -3,8 +3,7 @@ import { UserRole } from "@prisma/client";
 export interface IRegisterUser {
   fullName: string;
   email: string;
-  password: string;
-  gender: string;
+  password: string; 
   address: string;
   phone: string;
 }

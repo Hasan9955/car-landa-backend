@@ -9,12 +9,12 @@ datasource db {
 
 model User {
   id           String     @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
+  fullName     String
   email        String     @unique
   password     String
   role         UserRole   @default(USER)
   status       UserStatus @default(ACTIVE)
-  profilePhoto String?
+  profileImage String?
   passportURL  String?
   address      String?
   phone        String?
@@ -26,6 +26,7 @@ model User {
   otp          Otp[]
   order        Order[]
   Favourite    Favourite[]
+  Booking      Booking[]
 
   @@map("users")
 }
@@ -78,6 +79,7 @@ model Car {
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   Favourite  Favourite[]
+  Booking    Booking[]
 
   @@map("cars")
 }
@@ -115,6 +117,28 @@ model Favourite {
 
   @@unique([userId, carId])
   @@map("favourites")
+}
+
+model Booking {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+
+  car   Car    @relation(fields: [carId], references: [id])
+  carId String @db.ObjectId
+
+  deliveryAddress String?
+  fullName        String?
+  email           String?
+  phone           String?
+  totalPrice      Int
+  deliveryOption  DELIVERY_OPTION
+  bookingAt       DateTime
+  createdAt       DateTime        @default(now())
+
+  @@unique([userId, carId])
+  @@map("bookings")
 }
 
 model Order {
@@ -226,6 +250,11 @@ enum Location {
 enum Transmission {
   AUTOMATIC
   MANUAL
+}
+
+enum DELIVERY_OPTION {
+  DELIVERED_TO_HOME
+  DELIVERED_TO_PORT
 }
 
 enum OrderStatus {

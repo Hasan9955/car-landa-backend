@@ -40,8 +40,7 @@ const getAllUsers = async (
       profileImage: true,
       email: true,
       address: true,
-      phone: true,
-      gender: true,
+      phone: true, 
       createdAt: true,
     },
   });
@@ -72,8 +71,7 @@ const getMyProfile = async (id: string) => {
       profileImage: true,
       email: true,
       address: true,
-      phone: true,
-      gender: true,
+      phone: true, 
       createdAt: true,
     },
   });
@@ -89,8 +87,7 @@ const getUserById = async (id: string) => {
       profileImage: true,
       email: true,
       address: true,
-      phone: true,
-      gender: true,
+      phone: true, 
       createdAt: true,
     },
   });
@@ -121,8 +118,7 @@ const updateUser = async (id: string, payload: any, file: any) => {
       fullName: payload.fullName,
       profileImage: profileImage,
       phone: payload.phone,
-      address: payload.address,
-      gender: payload.gender
+      address: payload.address, 
     },
     select: {
       id: true,
@@ -130,8 +126,7 @@ const updateUser = async (id: string, payload: any, file: any) => {
       profileImage: true,
       email: true,
       address: true,
-      phone: true,
-      gender: true,
+      phone: true, 
     },
   });
   return result;

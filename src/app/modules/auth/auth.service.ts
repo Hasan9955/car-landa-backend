@@ -8,8 +8,7 @@ import prisma from "../../lib/prisma";
 import { IRegisterUser, IUserLogin } from "./auth.interface ";
 import { jwtHelpers } from "../../helpers/jwtHelpers";
 import { emailTemplate } from "../../utils/emailNotifications/emailHTML";
-import { fileUploader } from "../../middlewares/fileUploader";
-import { EnumGender } from "@prisma/client";
+import { fileUploader } from "../../middlewares/fileUploader"; 
 
 const registerUserIntoDB = async (payload: IRegisterUser, file: any) => {
   const existingUser = await prisma.user.findUnique({
@@ -39,8 +38,7 @@ const registerUserIntoDB = async (payload: IRegisterUser, file: any) => {
     data: {
       email: payload.email.trim(),
       password: hashedPassword,
-      fullName: payload.fullName,
-      gender: payload.gender as EnumGender,
+      fullName: payload.fullName, 
       address: payload.address,
       phone: payload.phone,
       profileImage,
@@ -143,8 +141,7 @@ const verifyOtpForRegister = async (payload: {
     email: userData.email,
     fullName: userData.fullName,
     phone: userData.phone,
-    address: userData.address,
-    gender: userData.gender,
+    address: userData.address, 
     profileImage: userData.profileImage,
     accessToken,
   };
@@ -227,8 +224,7 @@ const loginUserFromDB = async (payload: IUserLogin) => {
       email: userData.email,
       fullName: userData.fullName,
       phone: userData.phone,
-      address: userData.address,
-      gender: userData.gender,
+      address: userData.address, 
       profileImage: userData.profileImage,
       accessToken,
     };
