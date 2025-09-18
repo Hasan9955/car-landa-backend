@@ -90,6 +90,8 @@ export const checkOTP =  async (
       const token: string | undefined  = headersAuth?.split(' ')[1]
 
     console.log(token);
+    console.log(config.jwt.reset_pass_secret);
+    
     if (!token) {
       throw new ApiError(httpStatus.UNAUTHORIZED, "You are not authorized!");
     }

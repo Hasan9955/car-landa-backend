@@ -127,7 +127,7 @@ const verifyOtpForRegister = async (payload: {
     },
   });
 
-  
+
   const accessToken = jwtHelpers.generateToken(
     {
       id: userData.id,
@@ -302,6 +302,10 @@ const verifyOtp = async (payload: { userId: string; otpCode: number }) => {
       id: otpData.id,
     },
   });
+
+  console.log('from reset secret');
+  console.log('reset secret', config.jwt.reset_pass_secret);
+
   const accessToken = jwtHelpers.generateToken(
     {
       id: payload.userId,
