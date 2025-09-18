@@ -1,10 +1,14 @@
 import { z } from "zod";
 
-export const categorySchema = z.object({  
+export const createCategorySchema = z.object({  
   categoryName: z.string({
     required_error: "Category name is required!",
   }),
   isDeleted: z.boolean().default(false)
 });
+ 
 
-export type CategoryInput = z.infer<typeof categorySchema>;
+export const updateCategorySchema = z.object({
+  categoryName: z.string().optional(),
+  isDeleted: z.boolean().optional()
+});

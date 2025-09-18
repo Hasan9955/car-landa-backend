@@ -86,7 +86,8 @@ model Car {
 
 model Brand {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  BrandName String   @unique
+  brandName String   @unique
+  brandLogo String
   isDeleted Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
