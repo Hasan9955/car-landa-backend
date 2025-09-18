@@ -132,6 +132,7 @@ model Booking {
   fullName        String?
   email           String?
   phone           String?
+  status          BookingStatus   @default(PENDING)
   totalPrice      Int
   deliveryOption  DELIVERY_OPTION
   bookingAt       DateTime
@@ -255,6 +256,13 @@ enum Transmission {
 enum DELIVERY_OPTION {
   DELIVERED_TO_HOME
   DELIVERED_TO_PORT
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
 }
 
 enum OrderStatus {

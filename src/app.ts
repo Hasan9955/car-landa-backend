@@ -43,7 +43,7 @@ console.log(path.join(__dirname, "..", "public", "uploads"));
 
 app.get("/", (req: Request, res: Response) => {
   res.send({
-    Message: "The ecom server is running. . .",
+    Message: "The car landa server is running. . .",
   });
 });
 

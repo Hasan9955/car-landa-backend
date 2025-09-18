@@ -61,12 +61,6 @@ const auth = (...roles: string[]) => {
           "Your account is not activated yet!"
         );
       }
-      if (user.status === UserStatus.PENDING) {
-        throw new ApiError(
-          httpStatus.BAD_REQUEST,
-          "Your account is not accepted yet!"
-        );
-      }
 
       req.user = verifiedUser as JwtPayload;
 
@@ -95,7 +89,7 @@ export const checkOTP =  async (
     }
       const token: string | undefined  = headersAuth?.split(' ')[1]
 
-
+    console.log(token);
     if (!token) {
       throw new ApiError(httpStatus.UNAUTHORIZED, "You are not authorized!");
     }
@@ -104,6 +98,7 @@ export const checkOTP =  async (
       token,
       config.jwt.reset_pass_secret as Secret
     );
+    console.log(verifiedUser);
     if (!verifiedUser?.hexCode) {
       throw new ApiError(httpStatus.UNAUTHORIZED, "You are not authorized!");
     }

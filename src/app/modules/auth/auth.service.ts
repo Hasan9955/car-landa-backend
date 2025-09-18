@@ -39,8 +39,8 @@ const registerUserIntoDB = async (payload: IRegisterUser, file: any) => {
       email: payload.email.trim(),
       password: hashedPassword,
       fullName: payload.fullName, 
-      address: payload.address,
-      phone: payload.phone,
+      address: payload?.address,
+      phone: payload?.phone,
       profileImage,
     },
   });
@@ -126,6 +126,8 @@ const verifyOtpForRegister = async (payload: {
       isVerified: true,
     },
   });
+
+  
   const accessToken = jwtHelpers.generateToken(
     {
       id: userData.id,

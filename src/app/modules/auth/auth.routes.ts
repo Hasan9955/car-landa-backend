@@ -39,11 +39,13 @@ router.post(
   validateRequest(authValidation.forgotPassword),
   AuthControllers.forgotPassword
 );
+
 router.post(
   "/verify-otp",
   validateRequest(authValidation.verifyOtp),
   AuthControllers.verifyOtp
 );
+
 router.post(
   "/reset-password",
   validateRequest(authValidation.resetPassword),

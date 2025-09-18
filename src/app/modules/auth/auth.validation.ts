@@ -1,4 +1,5 @@
-import { UserRole } from "@prisma/client";
+import { UserRole, UserStatus } from "@prisma/client";
+import { profile } from "console";
 import z from "zod";
 
 const registerUser = z.object({
@@ -17,13 +18,14 @@ const registerUser = z.object({
       .string({
         required_error: "Password is required!",
       })
-      .min(8, "Password should be minimum 8 characters"),
-    address: z.string({
-      required_error: "Address is required!",
-    }),
-    phone: z.string({
-      required_error: "Phone number is required!",
-    }),
+      .min(6, "Password should be minimum 6 characters"),
+    phone: z.string().optional(),
+    address: z.string().optional(),
+    profileImage: z.string().optional(),
+    passportURL: z.string().optional(),
+    role: z.nativeEnum(UserRole).default(UserRole.USER),
+    status: z.nativeEnum(UserStatus).default(UserStatus.ACTIVE),
+
   }),
 });
 
@@ -53,6 +55,7 @@ const forgotPassword = z.object({
       }),
   }),
 });
+
 const verifyOtp = z.object({
   body: z.object({
     userId: z.string({
@@ -70,9 +73,10 @@ const resetPassword = z.object({
       .string({
         required_error: "Password is required!",
       })
-      .min(8, "password should be minimum 8 characters "),
+      .min(6, "password should be minimum 6 characters "),
   }),
 });
+
 const changePassword = z.object({
   body: z.object({
     oldPassword: z.string({
@@ -82,7 +86,7 @@ const changePassword = z.object({
       .string({
         required_error: "new password is required!",
       })
-      .min(8, "Password should be minimum 8 characters "),
+      .min(6, "Password should be minimum 6 characters "),
   }),
 });
 
