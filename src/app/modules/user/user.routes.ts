@@ -1,6 +1,5 @@
 import express from 'express';
-import { UserControllers } from './user.controller';
-import { UserRole } from "@prisma/client";
+import { UserControllers } from './user.controller'; 
 import auth from '../../middlewares/auth';
 import { fileUploader } from '../../middlewares/fileUploader';
 import parseBodyData from '../../middlewares/parseBodyData';

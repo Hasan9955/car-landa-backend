@@ -90,35 +90,35 @@ const changePassword = z.object({
   }),
 });
 
-//partner
+// //partner
 
-export const partnerRegistration = z.object({
-  body: z.object({
-    dateTimeFormat: z.string().nonempty("Data/time format is required"),
-    timezone: z.string().nonempty("Timezone is required"),
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
-    companyName: z.string().min(1, "Company name is required"),
-    address: z.string().min(1, "Address is required"),
-    city: z.string().min(1, "City is required"),
-    zipCode: z.string().min(1, "Zip code is required"),
-    email: z
-      .string()
-      .email("Invalid email address")
-      .min(1, "Email is required")
-      .max(255, "Email is too long")
-      .trim(),
-    phoneNumber: z
-      .string()
-      .regex(
-        /^\+?\d{1,4}[\s-]?\(?\d{1,4}?\)?[\s-]?\d{1,4}[\s-]?\d{1,4}$/,
-        "Invalid phone number format"
-      )
-      .min(10, "Mobile phone is required")
-      .max(20, "Mobile phone number is too long"),
-    password: z.string().min(8, "Password should have at least 8 characters"),
-  }),
-});
+// export const partnerRegistration = z.object({
+//   body: z.object({
+//     dateTimeFormat: z.string().nonempty("Data/time format is required"),
+//     timezone: z.string().nonempty("Timezone is required"),
+//     firstName: z.string().min(1, "First name is required"),
+//     lastName: z.string().min(1, "Last name is required"),
+//     companyName: z.string().min(1, "Company name is required"),
+//     address: z.string().min(1, "Address is required"),
+//     city: z.string().min(1, "City is required"),
+//     zipCode: z.string().min(1, "Zip code is required"),
+//     email: z
+//       .string()
+//       .email("Invalid email address")
+//       .min(1, "Email is required")
+//       .max(255, "Email is too long")
+//       .trim(),
+//     phoneNumber: z
+//       .string()
+//       .regex(
+//         /^\+?\d{1,4}[\s-]?\(?\d{1,4}?\)?[\s-]?\d{1,4}[\s-]?\d{1,4}$/,
+//         "Invalid phone number format"
+//       )
+//       .min(10, "Mobile phone is required")
+//       .max(20, "Mobile phone number is too long"),
+//     password: z.string().min(8, "Password should have at least 8 characters"),
+//   }),
+// });
 
 export const authValidation = {
   registerUser,
@@ -126,6 +126,5 @@ export const authValidation = {
   forgotPassword,
   verifyOtp,
   resetPassword,
-  changePassword,
-  partnerRegistration,
+  changePassword, 
 };

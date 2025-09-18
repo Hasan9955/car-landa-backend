@@ -29,7 +29,7 @@ const moduleRoutes = [
     path: "/brands",
     route: BrandRoutes,
   },
- 
+  
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

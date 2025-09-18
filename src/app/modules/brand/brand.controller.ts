@@ -33,6 +33,7 @@ const getBrandById = catchAsync(async (req: Request, res: Response) => {
 const createBrandIntoDB = catchAsync(async (req: Request, res: Response) => {
     const payload = req.body;
     const file = req.file;
+    console.log({payload}, {file});
     const result = await BrandService.createBrandIntoDB(payload, file);
     sendResponse(res, {
         statusCode: httpStatus.CREATED,
