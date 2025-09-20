@@ -197,7 +197,7 @@ model Notification {
 
 model Banner {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  imageUrl  String
+  bannerImage  String
   link      String?
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())

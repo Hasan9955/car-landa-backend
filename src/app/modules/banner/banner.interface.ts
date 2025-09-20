@@ -4,7 +4,7 @@
 
 interface IBanner {
   id: string;
-  imageUrl: string;
+  bannerImage: string;
   link?: string;
   isActive: boolean;
   createdAt: Date;

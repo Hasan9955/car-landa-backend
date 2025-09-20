@@ -31,7 +31,8 @@ const getBannerById = catchAsync(async (req: Request, res: Response) => {
 
 const createBanner = catchAsync(async (req: Request, res: Response) => {
   const payload = req.body;
-  const result = await BannerService.createBanner(payload);
+  const file = req.file;
+  const result = await BannerService.createBanner(payload, file);
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
@@ -44,7 +45,8 @@ const createBanner = catchAsync(async (req: Request, res: Response) => {
 const updateBanner = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.bannerId;
   const payload = req.body;
-  const result = await BannerService.updateBanner(id, payload);
+  const file = req.file;
+  const result = await BannerService.updateBanner(id, payload, file);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -67,7 +69,7 @@ const deleteBanner = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-    
+
 export const BannerController = {
   getAllBanners,
   getBannerById,

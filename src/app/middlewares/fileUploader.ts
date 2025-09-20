@@ -217,6 +217,7 @@ const upload = multer({ storage });
 const uploadProfileImage = upload.single("profileImage");
 const uploadBrandLogo = upload.single("brandLogo");
 const uploadCategoryImage = upload.single("imageUrl");
+const uploadBannerImage = upload.single("bannerImage");
 const uploadSignatureImage = upload.single("signature");
 const uploadMultipleImage = upload.fields([
   { name: "productImage", maxCount: 10 },
@@ -307,6 +308,7 @@ export const fileUploader = {
   uploadToDigitalOcean,
   uploadProfileImage,
   uploadBrandLogo,
+  uploadBannerImage,
   uploadCategoryImage,
   uploadMultipleImage,
   uploadSignatureImage,
