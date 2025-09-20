@@ -20,7 +20,7 @@ const getAllCars =  async (
   const whereCondition: any = {};
 
   if (filter) {
-    whereCondition.role = filter as CAR_MODEL;
+    whereCondition.carModel = filter as CAR_MODEL;
   }
 
   if (search) {
