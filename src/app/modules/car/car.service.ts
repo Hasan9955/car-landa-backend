@@ -2,14 +2,15 @@ import { CAR_MODEL } from "@prisma/client";
 import { paginationHelper } from "../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../interface/pagination.type";
 import { ICar } from "./car.interface";
+import prisma from "../../lib/prisma";
+import ApiError from "../../errors/ApiError";
+import { fileUploader } from "../../middlewares/fileUploader";
+import httpStatus from "http-status";
+import { deleteFromS3ByUrl } from "../../lib/deleteFromS3ByUrl";
 
 
 
-const createCarIntoDB = async (car: ICar) => {
 
-    console.log("Creating car:", car);
-    return car;
-}
 
 const getAllCars =  async (
   options: IPaginationOptions & { search?: string; filter?: string }
@@ -30,25 +31,120 @@ const getAllCars =  async (
     };
   }
 
-    return [];
-}
+  const cars = await prisma.user.findMany({
+    where: whereCondition,
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    skip, 
+  });
 
-const getCarById = async (carId: string): Promise<ICar | null> => {
+  const totalCars = await prisma.car.count({
+    where: whereCondition,
+  });
+
+  return {
+    meta: {
+      page,
+      limit,
+      total: totalCars,
+      totalPages: Math.ceil(totalCars / limit),
+    },
+    data: cars,
+  };
+};
+
+const getCarById = async (id: string) => {
+  const car = await prisma.car.findUnique({
+    where: { id }
+  });
+  return car;
+};
 
 
-    return null;
-}
+const createCarIntoDB = async (payload: any, files: Express.Multer.File[]) => {
+  let carImages: string[] = [];
 
-const updateCarById = async (carId: string, car: Partial<ICar>): Promise<ICar | null> => {
+  if (files && files.length > 0) {
+    
+    const uploadResults = await Promise.all(
+      files.map(async (file) => {
+        const uploadResult = await fileUploader.uploadToDigitalOcean(file);
+        return uploadResult.Location;
+      })
+    );
+
+    carImages = uploadResults;
+  }
+
+  
+  const newCar = await prisma.car.create({
+    data: {
+      ...payload, 
+      carImages: carImages,
+    },
+  });
+
+  return newCar;
+};
 
 
-    return null;
-}
-
-const deleteCarById = async (carId: string): Promise<ICar | null> => {
 
 
-    return null;
+const updateCarById = async (
+  id: string,
+  payload: any,
+  files: Express.Multer.File[] | null 
+) => {
+  const existingCar = await prisma.car.findUnique({
+    where: { id },
+  });
+
+  if (!existingCar) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Car not found");
+  }
+
+  let carImages: string[] = [];
+
+  // If frontend sends a new array of existing image URLs, keep them
+  if (payload.carImages && Array.isArray(payload.carImages)) {
+    carImages = payload.carImages;
+  }
+
+  // If new files are uploaded, add them
+  if (files && files.length > 0) {
+    const uploadResults = await Promise.all(
+      files.map((file) => fileUploader.uploadToDigitalOcean(file))
+    );
+    const newImageUrls = uploadResults.map((res) => res.Location);
+    carImages = [...carImages, ...newImageUrls];
+  }
+
+  const result = await prisma.car.update({
+    where: { id },
+    data: {
+      ...payload,
+      carImages,
+    },
+  });
+
+  return result;
+};
+
+
+const deleteCarById = async (carId: string) => {
+  const existingCar = await prisma.car.findUnique({
+    where: { id: carId },
+  });
+
+  if (!existingCar) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Car not found");
+  }
+
+  await prisma.car.delete({
+    where: { id: carId },
+  });
+
+  return existingCar;
 }
 
 

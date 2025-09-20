@@ -1,19 +1,20 @@
 import { Router } from "express";
+import { CarController } from "./car.controller";
 
 
 const router = Router();
 
 
 
-router.get("/all-cars");
+router.get("/all-cars", CarController.getAllCars);
 
-router.get("/:carId");
+router.get("/:carId", CarController.getCarById);
 
-router.post("/create-car");
+router.post("/create-car", CarController.createCar);
 
-router.put("/:carId");
+router.put("/:carId", CarController.updateCar);
 
-router.delete("/:carId");
+router.delete("/:carId", CarController.deleteCar);
 
 
 

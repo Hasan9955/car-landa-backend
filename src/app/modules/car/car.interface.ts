@@ -21,6 +21,7 @@ export interface ICar {
 
   numberOfSeats: number;
   enginePower: number;
+  
   shippingCost: number;
   customClearanceCost: number;
   description: string;
