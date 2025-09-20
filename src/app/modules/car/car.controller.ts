@@ -30,8 +30,7 @@ const getCarById = catchAsync(async (req: Request, res: Response) => {
 
 const createCar = catchAsync(async (req: Request, res: Response) => {
   const payload = req.body;
-  const file = req.file;
-  const files = file ? [file] : [];
+  const files = req.files; 
   const result = await CarService.createCarIntoDB(payload, files);
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -45,8 +44,7 @@ const createCar = catchAsync(async (req: Request, res: Response) => {
 const updateCar = catchAsync(async (req: Request, res: Response) => {
   const { carId } = req.params;
   const payload = req.body;
-  const file = req.file;
-  const files = file ? [file] : null;
+  const files = req.files; 
   const result = await CarService.updateCarById(carId, payload, files);
   sendResponse(res, {
     statusCode: httpStatus.OK,

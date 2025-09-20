@@ -31,7 +31,7 @@ const getAllCars =  async (
     };
   }
 
-  const cars = await prisma.user.findMany({
+  const cars = await prisma.car.findMany({
     where: whereCondition,
     orderBy: { createdAt: "desc" },
     take: limit,
@@ -61,17 +61,16 @@ const getCarById = async (id: string) => {
 };
 
 
-const createCarIntoDB = async (payload: any, files: Express.Multer.File[]) => {
-  let carImages: string[] = [];
+const createCarIntoDB = async (payload: any, files: any) => {
+  let carImages: string[] = []; 
 
-  if (files && files.length > 0) {
-    
+  if (files && files.carImages.length > 0) {
     const uploadResults = await Promise.all(
-      files.map(async (file) => {
+      files.carImages.map(async (file: any) => {
         const uploadResult = await fileUploader.uploadToDigitalOcean(file);
         return uploadResult.Location;
       })
-    );
+    ); 
 
     carImages = uploadResults;
   }
@@ -93,7 +92,7 @@ const createCarIntoDB = async (payload: any, files: Express.Multer.File[]) => {
 const updateCarById = async (
   id: string,
   payload: any,
-  files: Express.Multer.File[] | null 
+  files: any
 ) => {
   const existingCar = await prisma.car.findUnique({
     where: { id },
@@ -103,21 +102,28 @@ const updateCarById = async (
     throw new ApiError(httpStatus.NOT_FOUND, "Car not found");
   }
 
-  let carImages: string[] = [];
-
-  // If frontend sends a new array of existing image URLs, keep them
-  if (payload.carImages && Array.isArray(payload.carImages)) {
-    carImages = payload.carImages;
-  }
-
-  // If new files are uploaded, add them
-  if (files && files.length > 0) {
+  
+  let carImages: string[] = Array.isArray(payload.carImages)
+    ? payload.carImages
+    : [];
+    
+   
+  if (files && files.carImages.length > 0) {
     const uploadResults = await Promise.all(
-      files.map((file) => fileUploader.uploadToDigitalOcean(file))
+      files.carImages.map((file: any) => fileUploader.uploadToDigitalOcean(file))
     );
     const newImageUrls = uploadResults.map((res) => res.Location);
-    carImages = [...carImages, ...newImageUrls];
+    carImages = [...carImages, ...newImageUrls]; 
   }
+
+  // delete the images that were removed by user
+  const removedImages = existingCar.carImages.filter(
+    (img) => !carImages.includes(img)
+  );
+  if (removedImages.length > 0) {
+    await Promise.all(removedImages.map((img) => deleteFromS3ByUrl(img)));
+  }
+
 
   const result = await prisma.car.update({
     where: { id },
@@ -129,6 +135,7 @@ const updateCarById = async (
 
   return result;
 };
+
 
 
 const deleteCarById = async (carId: string) => {
